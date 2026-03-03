@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Asa de Cristal</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		html, body {
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			background-color: #000;
+		}
+		#flashcontent {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#flashcontent object,
+		#flashcontent embed {
+			width: 100% !important;
+			height: 100% !important;
+		}
+	</style>
+	<script type="text/javascript" src="swfobject.js"></script>
+</head>
+<body>
+	<div id="flashcontent">
+		<p style="color: white;">Para visualizar este conteúdo, você precisa do Adobe Flash Player.</p>
+	</div>
+
+	<script type="text/javascript">
+		function getUrlQueryString() {
+			var s = location.search;
+			if (s == null || s == "") return "";
+			return s.substring(0, 1) == "?" ? s.substring(1) : s;
+		}
+
+		function getQueryParamValue(name) {
+			var qs = getUrlQueryString();
+			if (!qs) return "";
+			var params = qs.split('&');
+			for (var i = 0; i < params.length; i++) {
+				var pair = params[i].split('=');
+				if (pair[0] == name) {
+					return decodeURIComponent(pair[1]);
+				}
+			}
+			return "";
+		}
+
+		var qs = getUrlQueryString();
+		if (qs != null && qs != "") {
+			console.log("Query String: " + qs);
+		}
+
+		// Usa 100% da tela
+		var swfWidth = "100%";
+		var swfHeight = "100%";
+
+		// SWFObject 1.5 syntax
+		var so = new SWFObject("WebLaucher.swf", "customRightClick", swfWidth, swfHeight, "11");
+		so.addParam("quality", "high");
+		so.addParam("name", "customRightClick");
+		so.addParam("id", "customRightClick");
+		so.addParam("AllowScriptAccess", "always");
+		so.addParam("allowFullScreen", "true");
+		so.addParam("menu", "false");
+		so.addParam("wmode", "direct"); // Melhor performance
+		so.addParam("scale", "noscale"); // Não escala automaticamente
+		so.addParam("salign", "tl"); // Alinha top-left
+		
+		// Passar parâmetros para o SWF
+		so.addVariable("bin", getQueryParamValue("bin") || "bin/game.bin");
+		so.addVariable("sid", getQueryParamValue("server_id") || "1");
+		so.addVariable("sidn", "server_id");
+		so.addVariable("sso", escape(getUrlQueryString()));
+		so.write("flashcontent");
+
+		// Previne zoom do navegador afetando o Flash
+		document.addEventListener('wheel', function(e) {
+			if (e.ctrlKey) {
+				e.preventDefault();
+			}
+		}, { passive: false });
+
+		// Previne atalhos de zoom (Ctrl+Plus, Ctrl+Minus, Ctrl+0)
+		document.addEventListener('keydown', function(e) {
+			if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+				e.preventDefault();
+			}
+		});
+	</script>
+</body>
+</html>
